@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common'
 import { NotificationsController } from './notifications.controller'
 import { EmailService } from 'src/notifications/email.service'
 import { InboxService } from 'src/notifications/inbox.service'
+import { IdentityService } from 'src/notifications/identity.service'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
+  imports: [ConfigModule],
   controllers: [NotificationsController],
   providers: [
     {
@@ -13,6 +16,10 @@ import { InboxService } from 'src/notifications/inbox.service'
     {
       provide: 'IInboxService',
       useClass: InboxService,
+    },
+    {
+      provide: 'IIdentityService',
+      useClass: IdentityService,
     },
   ],
 })
