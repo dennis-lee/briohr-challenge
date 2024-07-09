@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { NotificationsModule } from 'src/notifications/notifications.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
@@ -17,7 +15,7 @@ const db = MongooseModule.forRootAsync({
 
 @Module({
   imports: [ConfigModule.forRoot(), db, NotificationsModule, HealthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
