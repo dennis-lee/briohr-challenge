@@ -5,6 +5,7 @@ import { Model } from 'mongoose'
 
 export interface IInboxRepository {
   create(userId: string, content: string): Promise<Notification>
+  findByUserId(userId: string): Promise<Notification[]>
 }
 
 @Injectable()
@@ -17,5 +18,9 @@ export class InboxRepository implements IInboxRepository {
   create(userId: string, content: string): Promise<Notification> {
     const notification = new this.notificationModel({ userId, content })
     return notification.save()
+  }
+
+  findByUserId(userId: string): Promise<Notification[]> {
+    return this.notificationModel.find({ userId }).select('-__v').exec()
   }
 }

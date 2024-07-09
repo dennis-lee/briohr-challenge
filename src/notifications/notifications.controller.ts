@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Inject,
+  Param,
   Post,
   ValidationPipe,
 } from '@nestjs/common'
@@ -83,6 +85,15 @@ export class NotificationsController {
       return {
         statusCode: HttpStatus.CREATED,
       }
+    } catch (e) {
+      throw new Error('Something went wrong')
+    }
+  }
+
+  @Get(':userId')
+  async getUserNotifications(@Param('userId') userId: string) {
+    try {
+      return await this.inboxService.getNotificationsForUserId(userId)
     } catch (e) {
       throw new Error('Something went wrong')
     }

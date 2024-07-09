@@ -10,7 +10,7 @@ paths:
   /notifications:
     post:
       tags:
-        - 'Notifications'
+        - Notifications
       summary: Send a notification to a user
       requestBody:
         required: true
@@ -39,3 +39,42 @@ paths:
           description: Bad Request
         500:
           description: Internal Server Error
+  /notifications/{user_id}:
+    get:
+      tags:
+        - Notifications
+      summary: Get all notifications for a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: ID of the user
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of notifications for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 668d7724d0349689f224996f
+                    userId:
+                      type: string
+                      example: 456
+                    content:
+                      type: string
+                      example: 'Happy birthday Dennis!'
+                    isSeen:
+                      type: boolean
+                      example: false
+                    createdAt:
+                      type: string
+                      example: '2024-07-09T17:18:29.448Z'
+        404:
+          description: User not found

@@ -22,131 +22,150 @@ describe('NotificationsController', () => {
     inboxService = unitRef.get<IInboxService>('IInboxService')
   })
 
-  beforeEach(() => {
-    identityService.getCompanySettings.mockResolvedValue({
-      notificationChannelsEnabled: {
-        email: true,
-        inbox: true,
-      },
-    })
-
-    identityService.getUserSettings.mockResolvedValue({
-      profile: {
-        name: 'John',
-      },
-      notificationChannelsEnabled: {
-        email: true,
-        inbox: true,
-      },
-    })
-  })
-
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  it('should call email service when the notification type is monthly-payslip or happy-birthday', async () => {
-    const monthlyPayslipReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.MONTHLY_PAYSLIP,
-    }
+  describe('create', () => {
+    beforeEach(() => {
+      identityService.getCompanySettings.mockResolvedValue({
+        notificationChannelsEnabled: {
+          email: true,
+          inbox: true,
+        },
+      })
 
-    const birthdayReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.HAPPY_BIRTHDAY,
-    }
-
-    const sendPayslipFunc = jest.spyOn(emailService, 'sendPayslipEmail')
-    const sendBirthdayEmailFunc = jest.spyOn(emailService, 'sendBirthdayEmail')
-
-    await controller.create(monthlyPayslipReq)
-    expect(sendPayslipFunc).toHaveBeenCalledTimes(1)
-
-    await controller.create(birthdayReq)
-    expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(1)
-  })
-
-  it('should call inbox service when the notification type is leave-balance-reminder or happy-birthday', async () => {
-    const leaveBalanceReminderReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.LEAVE_BALANCE_REMINDER,
-    }
-
-    const birthdayReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.HAPPY_BIRTHDAY,
-    }
-
-    const createLeaveBalanceReminderFunc = jest.spyOn(
-      inboxService,
-      'createLeaveBalanceReminderNotification',
-    )
-    const createBirthdayNotifFunc = jest.spyOn(
-      inboxService,
-      'createBirthdayNotification',
-    )
-
-    await controller.create(leaveBalanceReminderReq)
-    expect(createLeaveBalanceReminderFunc).toHaveBeenCalledTimes(1)
-
-    await controller.create(birthdayReq)
-    expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(1)
-  })
-
-  it('should not call email or inbox service when company email and inbox notification channels are not enabled', async () => {
-    identityService.getCompanySettings.mockResolvedValueOnce({
-      notificationChannelsEnabled: {
-        email: false,
-        inbox: false,
-      },
+      identityService.getUserSettings.mockResolvedValue({
+        profile: {
+          name: 'John',
+        },
+        notificationChannelsEnabled: {
+          email: true,
+          inbox: true,
+        },
+      })
     })
 
-    const birthdayReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.HAPPY_BIRTHDAY,
-    }
+    it('should call email service when the notification type is monthly-payslip or happy-birthday', async () => {
+      const monthlyPayslipReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.MONTHLY_PAYSLIP,
+      }
 
-    const sendBirthdayEmailFunc = jest.spyOn(emailService, 'sendBirthdayEmail')
-    const createBirthdayNotifFunc = jest.spyOn(
-      inboxService,
-      'createBirthdayNotification',
-    )
+      const birthdayReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.HAPPY_BIRTHDAY,
+      }
 
-    await controller.create(birthdayReq)
-    expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(0)
-    expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(0)
-  })
+      const sendPayslipFunc = jest.spyOn(emailService, 'sendPayslipEmail')
+      const sendBirthdayEmailFunc = jest.spyOn(
+        emailService,
+        'sendBirthdayEmail',
+      )
 
-  it('should not call email or inbox service when user email and inbox notification channels are not enabled', async () => {
-    identityService.getUserSettings.mockResolvedValue({
-      profile: {
-        name: 'John',
-      },
-      notificationChannelsEnabled: {
-        email: false,
-        inbox: false,
-      },
+      await controller.create(monthlyPayslipReq)
+      expect(sendPayslipFunc).toHaveBeenCalledTimes(1)
+
+      await controller.create(birthdayReq)
+      expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(1)
     })
 
-    const birthdayReq = {
-      companyId: '123',
-      userId: '456',
-      notificationType: NotificationType.HAPPY_BIRTHDAY,
-    }
+    it('should call inbox service when the notification type is leave-balance-reminder or happy-birthday', async () => {
+      const leaveBalanceReminderReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.LEAVE_BALANCE_REMINDER,
+      }
 
-    const sendBirthdayEmailFunc = jest.spyOn(emailService, 'sendBirthdayEmail')
-    const createBirthdayNotifFunc = jest.spyOn(
-      inboxService,
-      'createBirthdayNotification',
-    )
+      const birthdayReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.HAPPY_BIRTHDAY,
+      }
 
-    await controller.create(birthdayReq)
-    expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(0)
-    expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(0)
+      const createLeaveBalanceReminderFunc = jest.spyOn(
+        inboxService,
+        'createLeaveBalanceReminderNotification',
+      )
+      const createBirthdayNotifFunc = jest.spyOn(
+        inboxService,
+        'createBirthdayNotification',
+      )
+
+      await controller.create(leaveBalanceReminderReq)
+      expect(createLeaveBalanceReminderFunc).toHaveBeenCalledTimes(1)
+
+      await controller.create(birthdayReq)
+      expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not call email or inbox service when company email and inbox notification channels are not enabled', async () => {
+      identityService.getCompanySettings.mockResolvedValueOnce({
+        notificationChannelsEnabled: {
+          email: false,
+          inbox: false,
+        },
+      })
+
+      const birthdayReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.HAPPY_BIRTHDAY,
+      }
+
+      const sendBirthdayEmailFunc = jest.spyOn(
+        emailService,
+        'sendBirthdayEmail',
+      )
+      const createBirthdayNotifFunc = jest.spyOn(
+        inboxService,
+        'createBirthdayNotification',
+      )
+
+      await controller.create(birthdayReq)
+      expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(0)
+      expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(0)
+    })
+
+    it('should not call email or inbox service when user email and inbox notification channels are not enabled', async () => {
+      identityService.getUserSettings.mockResolvedValue({
+        profile: {
+          name: 'John',
+        },
+        notificationChannelsEnabled: {
+          email: false,
+          inbox: false,
+        },
+      })
+
+      const birthdayReq = {
+        companyId: '123',
+        userId: '456',
+        notificationType: NotificationType.HAPPY_BIRTHDAY,
+      }
+
+      const sendBirthdayEmailFunc = jest.spyOn(
+        emailService,
+        'sendBirthdayEmail',
+      )
+      const createBirthdayNotifFunc = jest.spyOn(
+        inboxService,
+        'createBirthdayNotification',
+      )
+
+      await controller.create(birthdayReq)
+      expect(sendBirthdayEmailFunc).toHaveBeenCalledTimes(0)
+      expect(createBirthdayNotifFunc).toHaveBeenCalledTimes(0)
+    })
+  })
+
+  describe('getNotificationsForUser', () => {
+    it('should call InboxService.getNotificationsForUserId', async () => {
+      await controller.getUserNotifications('123')
+
+      expect(inboxService.getNotificationsForUserId).toHaveBeenCalledTimes(1)
+    })
   })
 })

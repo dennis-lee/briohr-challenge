@@ -46,4 +46,19 @@ describe('InboxRepository', () => {
       await expect(repository.create('123', 'Bob')).resolves.not.toThrow()
     })
   })
+
+  describe('findByUserId', () => {
+    it('should find all Notifications by user ID', async () => {
+      const userId = '123'
+
+      await repository.create(userId, 'Alice')
+      await repository.create(userId, 'Alice')
+
+      const results = await repository.findByUserId(userId)
+
+      expect(results).toHaveLength(2)
+      expect(results[0].userId).toBe(userId)
+      expect(results[1].userId).toBe(userId)
+    })
+  })
 })
