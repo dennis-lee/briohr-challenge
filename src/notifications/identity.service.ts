@@ -25,7 +25,11 @@ export interface IIdentityService {
 
 // Magic values
 const INVALID_COMPANY_ID = '@1000'
-const INVALID_USER_ID = '@1000'
+const COMPANY_EMAIL_ONLY = '@1001'
+const COMPANY_INBOX_ONLY = '@1002'
+const INVALID_USER_ID = '@2000'
+const USER_EMAIL_ONLY = '@2001'
+const USER_INBOX_ONLY = '@2002'
 
 @Injectable()
 export class IdentityService implements IIdentityService {
@@ -45,8 +49,16 @@ export class IdentityService implements IIdentityService {
 
           resolve({
             notificationChannelsEnabled: {
-              email: true,
-              inbox: true,
+              email:
+                this.configService.get<string>('APP_MODE') === 'development' &&
+                companyId === COMPANY_INBOX_ONLY
+                  ? false
+                  : true,
+              inbox:
+                this.configService.get<string>('APP_MODE') === 'development' &&
+                companyId === COMPANY_EMAIL_ONLY
+                  ? false
+                  : true,
             },
           })
         },
@@ -71,11 +83,19 @@ export class IdentityService implements IIdentityService {
 
         resolve({
           profile: {
-            name: 'employee',
+            name: 'employee', // TODO: refactor to generate name
           },
           notificationChannelsEnabled: {
-            email: true,
-            inbox: true,
+            email:
+              this.configService.get<string>('APP_MODE') === 'development' &&
+              userId === USER_INBOX_ONLY
+                ? false
+                : true,
+            inbox:
+              this.configService.get<string>('APP_MODE') === 'development' &&
+              userId === USER_EMAIL_ONLY
+                ? false
+                : true,
           },
         })
       }).then((data) => {
