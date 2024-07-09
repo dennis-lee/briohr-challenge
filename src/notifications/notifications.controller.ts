@@ -86,7 +86,7 @@ export class NotificationsController {
         statusCode: HttpStatus.CREATED,
       }
     } catch (e) {
-      throw new Error('Something went wrong')
+      throw e
     }
   }
 
@@ -95,7 +95,7 @@ export class NotificationsController {
     try {
       return await this.inboxService.getNotificationsForUserId(userId)
     } catch (e) {
-      throw new Error('Something went wrong')
+      throw e
     }
   }
 }
