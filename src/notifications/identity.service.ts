@@ -9,6 +9,9 @@ interface ICompanySettings {
 }
 
 interface IUserSettings {
+  profile: {
+    name: string
+  }
   notificationChannelsEnabled: {
     email: boolean
     inbox: boolean
@@ -67,6 +70,9 @@ export class IdentityService implements IIdentityService {
         }
 
         resolve({
+          profile: {
+            name: 'employee',
+          },
           notificationChannelsEnabled: {
             email: true,
             inbox: true,
