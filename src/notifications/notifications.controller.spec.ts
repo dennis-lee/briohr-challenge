@@ -13,14 +13,16 @@ describe('NotificationsController', () => {
   let identityService: jest.Mocked<IIdentityService>
   let inboxService: jest.Mocked<IInboxService>
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const { unit, unitRef } = TestBed.create(NotificationsController).compile()
 
     controller = unit
     emailService = unitRef.get<IEmailService>('IEmailService')
     identityService = unitRef.get<IIdentityService>('IIdentityService')
     inboxService = unitRef.get<IInboxService>('IInboxService')
+  })
 
+  beforeEach(() => {
     identityService.getCompanySettings.mockResolvedValue({
       notificationChannelsEnabled: {
         email: true,
@@ -37,6 +39,10 @@ describe('NotificationsController', () => {
         inbox: true,
       },
     })
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should call email service when the notification type is monthly-payslip or happy-birthday', async () => {
