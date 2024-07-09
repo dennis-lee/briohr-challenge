@@ -47,12 +47,6 @@ export class NotificationsController {
             )
           }
 
-          if (
-            companySettings.notificationChannelsEnabled.email &&
-            userSettings.notificationChannelsEnabled.email
-          ) {
-            this.emailService.sendBirthdayEmail(createNotificationDto.userId)
-          }
           break
 
         case NotificationType.MONTHLY_PAYSLIP:
@@ -66,6 +60,16 @@ export class NotificationsController {
           break
 
         case NotificationType.HAPPY_BIRTHDAY:
+          if (
+            companySettings.notificationChannelsEnabled.inbox &&
+            userSettings.notificationChannelsEnabled.inbox
+          ) {
+            this.inboxService.createBirthdayNotification(
+              createNotificationDto.userId,
+              userSettings.profile.name,
+            )
+          }
+
           if (
             companySettings.notificationChannelsEnabled.email &&
             userSettings.notificationChannelsEnabled.email
